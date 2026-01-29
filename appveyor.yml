@@ -16,16 +16,15 @@ for:
     only:
       - image: Visual Studio 2022
   install:
-    - cmd: |
-        SET PATH=C:\Python311-x64;C:\Python311-x64\Scripts;%PATH%
-        python -m pip install --upgrade pip setuptools wheel
-        pip install --only-binary=:all: numpy pandas scanpy anndata
-        pip install flet==0.27.1 gdown leidenalg igraph umap-learn
-        pip install -r requirements.txt
+    - SET PATH=C:\Python311-x64;C:\Python311-x64\Scripts;%PATH%
+    - python -m pip install --upgrade pip setuptools wheel
+    - pip install --only-binary=:all: numpy pandas scanpy anndata
+    - pip install flet==0.27.1 gdown leidenalg igraph umap-learn
+    - pip install -r requirements.txt
   build_script:
-    - cmd: python -m flet pack main.py --name scMalaria --product-name "scMalaria" --product-version "0.3.0"
+    - python -m flet pack main.py --name scMalaria --product-name "scMalaria" --product-version "0.3.0"
   after_build:
-    - cmd: 7z a scMalaria-windows.zip %CD%\dist\*.exe
+    - 7z a scMalaria-windows.zip %CD%\dist\*.exe
   artifacts:
     - path: scMalaria-windows.zip
       name: WindowsApp
@@ -35,21 +34,16 @@ for:
     only:
       - image: macOS-Sequoia
   install:
-    - sh: |
-        brew install --cask miniforge
-        source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh
-        conda create -n scmalaria_env python=3.11 -y
-        conda activate scmalaria_env
-        conda install -y -c conda-forge numpy pandas scanpy anndata llvmlite
-        pip install flet==0.27.1 gdown leidenalg igraph umap-learn
-        pip install -r requirements.txt
+    - brew install --cask miniforge
+    - source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh
+    - conda create -n scmalaria_env python=3.11 -y
+    - source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh && conda activate scmalaria_env && conda install -y -c conda-forge numpy pandas scanpy anndata llvmlite
+    - source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh && conda activate scmalaria_env && pip install flet==0.27.1 gdown leidenalg igraph umap-learn
+    - source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh && conda activate scmalaria_env && pip install -r requirements.txt
   build_script:
-    - sh: |
-        source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh
-        conda activate scmalaria_env
-        python -m flet pack main.py --name scMalaria --product-name "scMalaria" --product-version "0.3.0"
+    - source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh && conda activate scmalaria_env && python -m flet pack main.py --name scMalaria --product-name "scMalaria" --product-version "0.3.0"
   after_build:
-    - sh: tar -czvf scMalaria-macos.tar.gz -C dist scMalaria.app
+    - tar -czvf scMalaria-macos.tar.gz -C dist scMalaria.app
   artifacts:
     - path: scMalaria-macos.tar.gz
       name: macOSApp
