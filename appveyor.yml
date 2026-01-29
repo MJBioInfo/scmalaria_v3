@@ -1,0 +1,59 @@
+image:
+  - Visual Studio 2022
+  - macOS-Sequoia
+
+stack: python 3.11
+
+environment:
+  GITHUB_TOKEN:
+    secure: NYfvv8PUgDoYw+spLW28mvbOzErgBYMH/VvS4igYdN5J6PUM5di66PmTzHtLFgz9
+
+install:
+  # --- macOS Strategy: Use Conda for scientific stack ---
+  - sh: brew install --cask miniforge
+  - sh: source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh
+  - sh: conda create -n scmalaria_env python=3.11 -y
+  - sh: conda activate scmalaria_env
+  - sh: conda install -y -c conda-forge numpy pandas scanpy anndata llvmlite
+  - sh: pip install flet==0.27.1 gdown leidenalg igraph umap-learn
+
+  # --- Windows Strategy: Force 64-bit and pip install ---
+  - cmd: SET PATH=C:\Python311-x64;C:\Python311-x64\Scripts;%PATH%
+  - cmd: python -m pip install --upgrade pip setuptools wheel
+  - cmd: pip install --only-binary=:all: numpy pandas scanpy anndata
+  - cmd: pip install flet==0.27.1
+  - cmd: pip install -r requirements.txt
+
+build_script:
+  - sh: source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh && conda activate scmalaria_env && python -m flet pack main.py --name scMalaria --product-name "scMalaria" --product-version "0.3.0"
+  - cmd: python -m flet pack main.py --name scMalaria --product-name "scMalaria" --product-version "0.3.0"
+
+test: off
+
+deploy:
+  provider: GitHub
+  auth_token: $(GITHUB_TOKEN)
+  artifact: /.*\.zip|.*\.tar\.gz/
+  on:
+    appveyor_repo_tag: true
+
+for:
+-
+  matrix:
+    only:
+      - image: Visual Studio 2022
+  after_build:
+    - 7z a scMalaria-windows.zip %CD%\dist\*.exe
+  artifacts:
+    - path: scMalaria-windows.zip
+      name: WindowsApp
+
+-
+  matrix:
+    only:
+      - image: macOS-Sequoia
+  after_build:
+    - tar -czvf scMalaria-macos.tar.gz -C dist scMalaria.app
+  artifacts:
+    - path: scMalaria-macos.tar.gz
+      name: macOSApp

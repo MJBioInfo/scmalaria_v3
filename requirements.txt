@@ -1,0 +1,15 @@
+flet==0.27.1
+scanpy
+anndata
+gdown
+pandas
+numpy
+matplotlib
+scipy
+seaborn
+statsmodels
+scikit-learn
+umap-learn
+h5py
+leidenalg
+igraph
