@@ -22,7 +22,8 @@ for:
     - pip install flet==0.27.1 gdown leidenalg igraph umap-learn
     - pip install -r requirements.txt
   build_script:
-    - python -m flet pack main.py --name scMalaria --product-name "scMalaria" --product-version "0.3.0"
+    # Changed from 'python -m flet' to 'flet'
+    - flet pack main.py --name scMalaria --product-name "scMalaria" --product-version "0.3.0"
   after_build:
     - 7z a scMalaria-windows.zip %CD%\dist\*.exe
   artifacts:
@@ -41,7 +42,7 @@ for:
     - source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh && conda activate scmalaria_env && pip install flet==0.27.1 gdown leidenalg igraph umap-learn
     - source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh && conda activate scmalaria_env && pip install -r requirements.txt
   build_script:
-    - source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh && conda activate scmalaria_env &&  flet pack main.py --name scMalaria --product-name "scMalaria" --product-version "0.3.0"
+    - source /usr/local/Caskroom/miniforge/base/etc/profile.d/conda.sh && conda activate scmalaria_env && flet pack main.py --name scMalaria --product-name "scMalaria" --product-version "0.3.0"
   after_build:
     - tar -czvf scMalaria-macos.tar.gz -C dist scMalaria.app
   artifacts:
